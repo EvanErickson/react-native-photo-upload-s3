@@ -33,6 +33,8 @@ function App() {
       quality: 1,
     });
     
+    console.log(result) 
+    
     try {
       Storage.put(result, 'File content', {
         progressCallback(progress) {

@@ -1,0 +1,16 @@
+{
+  "auth": {
+    "dj0photoupload908ab192": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
+  "storage": {
+    "dj0PhotoUpload": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
+  }
+}

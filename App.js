@@ -39,7 +39,7 @@ function App() {
       try {
         const response = await fetch(data);
         const blob = await response.blob();
-        await Storage.put(`${public/}/${filename}_${uuid()}`, blob, {
+        await Storage.put(`customer/images`, blob, {
           contentType: 'image/jpeg', // contentType is optional
         });
       } catch (err) {

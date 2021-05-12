@@ -34,23 +34,24 @@ function App() {
     });
     
     console.log(result) 
-    
-    try {
-      Storage.put(result, 'File content', {
-        progressCallback(progress) {
-            console.log(`Uploaded: ${progress.loaded}/${progress.total}`);
-      },
-      });
-    } catch (error) {
-      console.log(error);
-    }
 
-    setImage(result);
-    console.log(result);
-    if (!result.cancelled) {
-      setImage(result.uri);
+    async function pathToImageFile(data) {
+      try {
+        const response = await fetch(data);
+        const blob = await response.blob();
+        await Storage.put(`${public/}/${filename}_${uuid()}`, blob, {
+          contentType: 'image/jpeg', // contentType is optional
+        });
+      } catch (err) {
+        console.log('Error uploading file:', err);
+      }
     }
-  };
+    
+    // later
+    
+    pathToImageFile(result.uri);
+  }
+
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

@@ -1,11 +1,16 @@
-async function pathToImageFile() {
-    try {
-      const response = await fetch(result);
-      const blob = await response.blob();
-      await Storage.put(result, blob, {
-        contentType: 'image/jpeg', // contentType is optional
-      });
-    } catch (err) {
-      console.log('Error uploading file:', err);
-    }
+try {
+    Storage.put(result, 'File content', {
+      progressCallback(progress) {
+          console.log(`Uploaded: ${progress.loaded}/${progress.total}`);
+    },
+    });
+  } catch (error) {
+    console.log(error);
   }
+
+  setImage(result);
+  console.log(result);
+  if (!result.cancelled) {
+    setImage(result.uri);
+  }
+};

@@ -7,12 +7,12 @@ Amplify.configure(config)
 
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { Button, Image, View, Platform, StyleSheet, Text } from 'react-native';
+import { Button, Image, View, Platform, StyleSheet, Text, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-
 
 function App() {
   const [image, setImage] = useState(null)
+  const [name, setName] = useState('Evan Erickson')
 
   useEffect(() => {
     (async () => {
@@ -32,26 +32,20 @@ function App() {
       aspect: [4, 3],
       quality: 1,
     });
-    
     console.log(result) 
-
     async function pathToImageFile(data) {
       try {
         const response = await fetch(data);
         const blob = await response.blob();
-        await Storage.put(`customer/images`, blob, {
+        await Storage.put(`customers/${name}`, blob, {
           contentType: 'image/jpeg', // contentType is optional
         });
       } catch (err) {
         console.log('Error uploading file:', err);
       }
     }
-    
-    // later
-    
     pathToImageFile(result.uri);
   }
-
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

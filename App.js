@@ -14,6 +14,7 @@ function App() {
   const [percentage, setPercentage] = useState(0);
   const [name, setName] = useState('')
 
+  //Ran on load to ask permissions for Camera / Photo Library 
   useEffect(() => {
     (async () => {
       if (Constants.platform.ios) {
@@ -29,22 +30,22 @@ function App() {
     })();
   }, []);
 
+  //Funcion that takes photo
   const takePhoto = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: 'Images',
       aspect: [4, 3],
     });
-
     this.handleImagePicked(result);
   };
 
+  //Function that uses Image Picker to select from library
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: 'Images',
       aspect: [4, 3],
       quality: 1,
     });
-
     this.handleImagePicked(result);
   };
 

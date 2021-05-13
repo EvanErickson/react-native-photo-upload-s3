@@ -14,6 +14,15 @@ function App() {
   const [percentage, setPercentage] = useState(0);
   const [name, setName] = useState('')
 
+
+  async function signOut() {
+    try {
+        await Auth.signOut();
+    } catch (error) {
+        console.log('error signing out: ', error);
+    }
+  }
+
   //Ran on load to ask permissions for Camera / Photo Library 
   useEffect(() => {
     (async () => {
@@ -129,6 +138,9 @@ function App() {
 
       <Button onPress={pickImage} title='Pick an image from camera roll' />
       <Button onPress={takePhoto} title='Take a photo' />
+      <Button title="Sign Out" style={styles.moreInfo} onPress={() => {
+          signOut();
+        }} />
     </View>
   );
 }

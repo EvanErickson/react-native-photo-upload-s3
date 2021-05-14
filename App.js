@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { withAuthenticator } from 'aws-amplify-react-native'
-import { StyleSheet, Text, View, Button, Clipboard, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, Clipboard, Image, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import Auth from '@aws-amplify/auth';
@@ -14,10 +14,12 @@ function App() {
   const [percentage, setPercentage] = useState(0);
   const [name, setName] = useState('')
 
+  console.log(Auth.response);
 
   async function signOut() {
     try {
         await Auth.signOut();
+        console.log(Auth.response)
     } catch (error) {
         console.log('error signing out: ', error);
     }
@@ -66,7 +68,7 @@ function App() {
       } else {
         setPercentage(0);
         const img = await fetchImageFromUri(pickerResult.uri);
-        const uploadUrl = await uploadImage('demo.jpg', img);
+        const uploadUrl = await uploadImage(`${name} - ${new Date()}`, img);
         downloadImage(uploadUrl);
       }
     } catch (e) {
@@ -77,6 +79,7 @@ function App() {
 
   uploadImage = (filename, img) => {
     Auth.currentCredentials();
+    // Maybe insert a filename=`${Date.now()}-${file.name}`
     return Storage.put(filename, img, {
       level: 'public',
       contentType: 'image/jpeg',
@@ -85,6 +88,7 @@ function App() {
       },
     })
       .then((response) => {
+        console.log(response)
         return response.key;
       })
       .catch((error) => {
@@ -102,6 +106,7 @@ function App() {
     setPercentage(number);
   };
 
+  // Can use this for fetching images from json?
   downloadImage = (uri) => {
     Storage.get(uri)
       .then((result) => setImage(result))
@@ -115,7 +120,9 @@ function App() {
   };
 
   const copyToClipboard = () => {
+    //I'm pretty sure image is stored as a url and they are just setting the clipboard to a url string
     Clipboard.setString(image);
+    // maybe insert a state function here so that the image url can get saved and somehow referenced / sent to dynamo.
     alert('Copied image URL to clipboard');
   };
 
@@ -123,6 +130,14 @@ function App() {
     <View style={styles.container}>
       <Text style={styles.title}>DJ0 Upload Profile Photo</Text>
       {percentage !== 0 && <Text style={styles.percentage}>{percentage}%</Text>}
+
+      <TextInput
+        style={styles.input}
+        onChangeText={setName}
+        value={name}
+        placeholder="Full Name"
+      />
+
 
       {image && (
         <View>
@@ -138,6 +153,11 @@ function App() {
 
       <Button onPress={pickImage} title='Pick an image from camera roll' />
       <Button onPress={takePhoto} title='Take a photo' />
+      <Button onPress={() => {
+        setImage(null)
+        setName('')
+        setPercentage(0)
+      }} title='Done' />
       <Button title="Sign Out" style={styles.moreInfo} onPress={() => {
           signOut();
         }} />
@@ -167,6 +187,13 @@ const styles = StyleSheet.create({
   info: {
     textAlign: 'center',
     marginBottom: 20,
+  },
+  input: {
+    height: 40,
+    width: '65%',
+    margin: 12,
+    borderWidth: 1,
+    padding: 10
   },
 });
 
